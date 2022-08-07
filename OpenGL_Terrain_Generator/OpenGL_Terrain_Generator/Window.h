@@ -25,13 +25,18 @@ private:
 	int initialized; // Flag about initializion: 1 - initialized, 0 - not initialized.
 	std::string title; // Title of window.
 	GLFWwindow* pWindow; // Pointer to the GLFW window.
+	bool keys[1024]; // Keyboard keys.
+
+	float redColorFactor; // Red factor of background.
+	float greenColorFactor; // Green factor of background.
+	float blueColorFactor; // Blue factor of background.
 
 public:
 	// Constructors:
-	Window(int width, int height, const std::string& title);
+	Window(int width, int height, const std::string& title, float redColorFactor, float greenColorFactor, float blueColorFactor);
 	Window();
 
-	// Desturctors:
+	// Destructors:
 	~Window();
 
 	// Proporties:
@@ -39,6 +44,7 @@ public:
 	int getHeight();
 	int isInitialized();
 	int isWindowClosed();
+	int isKeyPressed(int keyCode);
 	const std::string& getTitle();
 	
 	// Methods:
@@ -46,5 +52,10 @@ public:
 	void PollEvents();  // Check if any events happened.
 	void Initialize();  // Initialize GLFW Window and other things.
 	void Deinitialize(); // Free resources.
+	void Close(); // Close window.
+	void ClearColorBuffer(); // Clear color from previous scene.
+
+	static void HandleFrameBufferResize(GLFWwindow* pWindow, int widthOfWindow, int heightOfWindow); // Handle resize call back.
+	static void HandleKeys(GLFWwindow* window, int key, int code, int action, int mode); // Handle keys call backs.
 };
 

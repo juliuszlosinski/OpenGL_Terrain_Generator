@@ -1,11 +1,19 @@
 #include "Window.h"
 
 // Create window with specified params.
-Window::Window(int width, int height, const std::string& title)
+Window::Window(int width, int height, const std::string& title, float redColorFactor, float greenColorFactor, float blueColorFactor)
 {
 	this->width = width;
 	this->height = height;
 	this->title = title;
+	this->redColorFactor = redColorFactor;
+	this->greenColorFactor = greenColorFactor;
+	this->blueColorFactor = blueColorFactor;
+
+	for (size_t i = 0; i < 1024; i++) {
+		keys[i] = 0;
+	}
+
 }
 
 // Default constructor.
@@ -14,6 +22,9 @@ Window::Window()
 	this->width = 800;
 	this->height = 600;
 	this->title = std::string("OpenGL Application");
+	this->redColorFactor = .2f;
+	this->greenColorFactor = .3f;
+	this->blueColorFactor = .3f;
 }
 
 // Destructor.
@@ -75,20 +86,53 @@ void Window::PollEvents()
 	}
 }
 
+// Close window.
+void Window::Close() {
+	glfwSetWindowShouldClose(this->pWindow, GL_TRUE);
+}
+
 // Free resources that are were by used by GLFW.
 void Window::Deinitialize()
 {
 	if (this->initialized) {
+		glfwSetWindowShouldClose(this->pWindow, GL_TRUE);
 		glfwTerminate();
 		this->initialized = 0;
 	}
 }
 
 // Callback for framebuffer resize operation.
-void framebuffer_size_callback(GLFWwindow* pWindow, int widthOfWindow, int heightOfWindow)
+void Window::HandleFrameBufferResize(GLFWwindow* pWindow, int widthOfWindow, int heightOfWindow)
 {
 	// Setting up the new configuration of viewport.
 	glViewport(0, 0, widthOfWindow, heightOfWindow);
+}
+
+// Get information about if key is pressed.
+int Window::isKeyPressed(int keyCode) {
+	return this->keys[keyCode];
+}
+
+// Clear color from previous scene.
+void Window::ClearColorBuffer(){
+	glClearColor(this->redColorFactor, this->greenColorFactor, this->blueColorFactor, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+}
+
+// Callback for keys events.
+void Window::HandleKeys(GLFWwindow* window, int key, int code, int action, int mode){ // Handle keys call backs.
+	// Casting the window.
+	Window* theWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
+
+	// Checking if any key was pressed.
+	if (key >= 0 && key < 1024) {
+		if (action == GLFW_PRESS) {
+			theWindow -> keys[key] = true;
+		}
+		else if (action == GLFW_RELEASE) {
+			theWindow->keys[key] = false;
+		}
+	}
 }
 
 // Initialize GLFW (Window and its associated context) and GLEW.
@@ -143,7 +187,13 @@ void Window::Initialize()
 	glViewport(0, 0, this->width, this->height);
 
 	// Setting up the framebuffer callback for viewport.
-	glfwSetFramebufferSizeCallback(this->pWindow, framebuffer_size_callback);
+	glfwSetFramebufferSizeCallback(this->pWindow, Window::HandleFrameBufferResize);
+
+	// Setting up keys call back.
+	glfwSetKeyCallback(this->pWindow, Window::HandleKeys);
+
+	// Setting pointer.
+	glfwSetWindowUserPointer(this->pWindow, this);
 
 	this->initialized = 1;
 }
