@@ -15,37 +15,7 @@
 #include <string>
 #include <fstream>
 #include "FileHandler.h"
-
-int CreateShaderObjectFromFile(std::string const& pathToFile, GLenum typeOfShader) {
-	unsigned int shaderObject;
-
-	// Creating shader object.
-	shaderObject = glCreateShader(typeOfShader);
-
-	// Attach shader source code to the shader object.
-	std::string data = ReadTextFromFile(pathToFile);
-	const char* fData = data.c_str();
-	glShaderSource(shaderObject, 1, &fData, NULL);
-
-	std::cout << "SRC::SHADER::" << typeOfShader << "::COMPILATION_SOURCE\n" << data << "\n";
-
-	// Compiling shader object.
-	glCompileShader(shaderObject);
-
-	// Checking if compiling of shader object is successful.
-	int success; // Integer to indicate success.
-	char infoLog[512]; // Storage container for the error messages.
-	glGetShaderiv(shaderObject, GL_COMPILE_STATUS, &success);
-	if (!success) {
-		glGetShaderInfoLog(shaderObject, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::" << typeOfShader << "::COMPILATION_FAILED\n" << infoLog << std::endl;
-		return -1;
-	}
-	else {
-		std::cout << "SUCCESS::SHADER::" << typeOfShader << "::COMPILATION_SUCCESS\n" << std::endl;
-		return shaderObject;
-	}
-}
+#include "Shader.h"
 
 int main(void) {
 
@@ -54,7 +24,9 @@ int main(void) {
 
 	pWindow->Initialize();
 
-	std::cout << CreateShaderObjectFromFile("Shaders\\shader.vert", GL_VERTEX_SHADER);
+	Shader* pShader;
+	pShader = new Shader();
+	pShader->CreateFromFiles("Shaders\\shader.vert", "Shaders\\shader.frag");
 
 	// ########## RENDER LOOOP ########
 	while (!pWindow->isWindowClosed()) {
