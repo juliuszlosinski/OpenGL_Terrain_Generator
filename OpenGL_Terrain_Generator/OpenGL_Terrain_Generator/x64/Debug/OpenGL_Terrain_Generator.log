@@ -1,5 +1,0 @@
-﻿  LINK : D:\OpenGL_Terrain_Generator\OpenGL_Terrain_Generator\x64\Debug\OpenGL_Terrain_Generator.exe not found or not built by the last incremental link; performing full link
-glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'D:\OpenGL_Terrain_Generator\OpenGL_Terrain_Generator\x64\Debug\vc120.pdb'; linking object as if no debug info
-LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-  OpenGL_Terrain_Generator.vcxproj -> D:\OpenGL_Terrain_Generator\OpenGL_Terrain_Generator\x64\Debug\OpenGL_Terrain_Generator.exe
