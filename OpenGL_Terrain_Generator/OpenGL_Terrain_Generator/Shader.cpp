@@ -156,4 +156,8 @@ void Shader::CreateFromShaderObjects(int vertexShaderObject, int fragmentShaderO
 	else {
 		std::cout << "SUCCESS::LINKING_SHADERS::" << this->shaderProgram << "::LINKING_SUCCESS" << std::endl;
 	}
+
+	// Deleting shader objects.
+	glDeleteShader(vertexShaderObject);
+	glDeleteShader(fragmentShaderObject);
 }

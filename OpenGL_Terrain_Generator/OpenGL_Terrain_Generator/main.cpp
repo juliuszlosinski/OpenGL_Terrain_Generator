@@ -28,6 +28,33 @@ int main(void) {
 	pShader = new Shader();
 	pShader->CreateFromFiles("Shaders\\shader.vert", "Shaders\\shader.frag");
 
+	GLfloat vertices[] = {
+		0.5f, 0.5f, 0.0f,
+		0.5f, -0.5f, 0.0f,
+		-0.5f, -0.5f, 0.0f,
+		-0.5f, 0.5f, 0.0f
+	};
+
+	GLuint indices[] = {
+		0, 1, 3,
+		1, 2, 3
+	};
+
+	GLuint VAO;
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+		GLuint VBO;
+		glGenBuffers(1, &VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+		glEnableVertexAttribArray(0);
+		GLuint EBO;
+		glGenBuffers(1, &EBO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glBindVertexArray(0);
+
 	// ########## RENDER LOOOP ########
 	while (!pWindow->isWindowClosed()) {
 		
@@ -37,38 +64,16 @@ int main(void) {
 		// Clearing previous scene.
 		pWindow->ClearColorBuffer();
 
-
-		float vertices[] = {
-			-0.5f, -0.5f, 0.0f,
-			0.5f, -0.5f, 0.0f,
-			0.0f, 0.5f, 0.0f
-		};
-
-		unsigned int VBO;
-
-		// Generating the buffer.
-		glGenBuffers(1, &VBO);
-
-		// Binding newly created buffer to the GL_ARRAY_BUFFER.
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-		// Copying the previously defined vertex data into the buffer's memory.
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 		
-		/*
-			glBufferData(target, size, data, usage);
-			Is a function specifically targeted to copy user-defined data into currently bound buffer.
-			Its first argument is the type of the buffer we want to copy data into: the vertex buffer object is currently bound to GL_ARRAY_BUFFER.
-			The second argument specifieds the size of the data (in bytes) we want to pass to the buffer; a simple sizeof of the vertex data suffices.
-			The third parameter is the actual data we want to send.
-			The fourth parameter specifies how we want the graphics card to manage the given data. This can take 3 forms:
-				- GL_STREAM_DRAW: The data is set only once and used by the GPU at most a few times.
-				- GL_STATIC_DRAW: The data is set only once and used many times.
-				- GL_DYNAMIC_DRAW: The data is changed a lot and used many times.
-		*/
+		pShader->UseProgram();
+		glBindVertexArray(VAO);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 
-
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
 		// Swapping color buffer.
 		pWindow->SwapBuffers();
 
